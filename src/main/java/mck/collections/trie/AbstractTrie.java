@@ -34,17 +34,6 @@ public abstract class AbstractTrie<V>
     }
 
     /**
-     * @param length : the array length
-     * @return a int array in which all elements are 1
-     */
-    private static int[] ones( int length )
-    {
-        int[] ones = new int[length];
-        Arrays.fill( ones, 1 );
-        return ones;
-    }
-
-    /**
      * look up char indices
      *
      * @param chars : the chars of a prefix or suffix, from .toCharArray()
