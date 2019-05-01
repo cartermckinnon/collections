@@ -1,8 +1,6 @@
 
 package mck.collections.trie;
 
-import java.util.Arrays;
-import java.util.List;
 import static mck.collections.trie.TrieNode.charToIndex;
 
 /**
@@ -20,54 +18,6 @@ public class SuffixTrie<V> extends AbstractTrie<V>
         super();
     }
     
-    /**
-     * constructor for constructing a trie with the keys and values
-     *
-     * @param keys   : the keys for trie construction
-     * @param values : the corresponding values of the keys
-     */
-    public SuffixTrie( List<String> keys, List<V> values )
-    {
-        super( keys, values );
-    }
-
-    /**
-     * constructor for constructing a trie with the keys and values and scores;
-     * the scores are used for TrieNode comparison
-     *
-     * @param keys    : the keys for trie construction
-     * @param values  : the corresponding values of the keys
-     * @param scores: the scores of each of the key-value pairs
-     */
-    public SuffixTrie( List<String> keys, List<V> values, int[] scores )
-    {
-        super( keys, values, scores );
-    }
-
-    /**
-     * constructor for constructing a trie with the keys and values
-     *
-     * @param keys   : the keys for trie construction
-     * @param values : the corresponding values of the keys
-     */
-    public SuffixTrie( String[] keys, V[] values )
-    {
-        super( Arrays.asList( keys ), Arrays.asList( values ) );
-    }
-
-    /**
-     * constructor for constructing a trie with the keys and values and scores;
-     * the scores are used for TrieNode comparison
-     *
-     * @param keys    : the keys for trie construction
-     * @param values  : the corresponding values of the keys
-     * @param scores: the scores of each of the key-value pairs
-     */
-    public SuffixTrie( String[] keys, V[] values, int[] scores )
-    {
-        super( Arrays.asList( keys ), Arrays.asList( values ), scores );
-    }
-
     /**
      * {@inheritDoc}
      */

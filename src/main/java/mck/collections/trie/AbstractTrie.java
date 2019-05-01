@@ -24,11 +24,6 @@ public abstract class AbstractTrie<V>
      * number of key-value nodes added to this trie
      */
     protected int size;
-    /**
-     * true if all words are added with the constructor, and false if one or
-     * more words are not added
-     */
-    private boolean isAllAdded;
 
     /**
      * an internal constructor
@@ -36,59 +31,6 @@ public abstract class AbstractTrie<V>
     protected AbstractTrie()
     {
         root = new TrieNode<>( (char) 0, 0 );
-    }
-
-    /**
-     * constructor for constructing a trie with the keys and values
-     *
-     * @param keys   : the keys for trie construction
-     * @param values : the corresponding values of the keys
-     */
-    public AbstractTrie( List<String> keys, List<V> values )
-    {
-        this( keys, values, ones( keys.size() ) );
-    }
-
-    /**
-     * constructor for constructing a trie with the keys and values and scores;
-     * the scores are used for TrieNode comparison
-     *
-     * @param keys    : the keys for trie construction
-     * @param values  : the corresponding values of the keys
-     * @param scores: the scores of each of the key-value pairs
-     */
-    public AbstractTrie( List<String> keys, List<V> values, int[] scores )
-    {
-        this();
-        if( keys.size() != values.size() || keys.size() != scores.length )
-        {
-            throw new IllegalArgumentException( "IllegalArgumentException: the sizes of 'elements', 'values' and 'scores' should agree; "
-                                                + "elements.size() = " + keys.size() + ", values.size() = " + values.size() + ", scores.length = " + scores.length );
-        }
-        boolean allAdded = true;
-        for( int i = 0; i < keys.size(); i++ )
-        {
-            boolean added = put( keys.get( i ), values.get( i ), scores[i] );
-            if( added == false )
-            {
-                allAdded = false;
-            }
-        }
-        isAllAdded = allAdded;
-    }
-
-    /**
-     * <pre>
-     * Words that contain one or more unsupported chars are automatically not added to a trie.
-     * To check if all words are added, check trie.isAllAdded() to see if all characters are added;
-     * </pre>
-     *
-     * @return true if all words are added with the constructor, and false if
-     *         one or more words are not added
-     */
-    public boolean isAllAdded()
-    {
-        return isAllAdded;
     }
 
     /**

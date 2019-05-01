@@ -4,49 +4,48 @@ package mck.collections.trie;
 /**
  * Selectively exposes the put method of AbstractTrie, allowing much more flexible
  * trie construction while still disallowing modifications after first use.
- * 
+ *
  * @author carter
  */
-public class TrieBuilder<T extends AbstractTrie<V>,V>
+public class TrieBuilder<T extends AbstractTrie<V>, V>
 {
     private long failedToAdd = 0;
-    
+
     /**
      * Get a builder for a new PrefixTrie.
-     * 
+     *
      * @param <V>
-     * @return 
+     * @return
      */
-    public static <V> TrieBuilder<PrefixTrie<V>,V> prefix()
+    public static <V> TrieBuilder<PrefixTrie<V>, V> prefix()
     {
         return new TrieBuilder<>( new PrefixTrie<>() );
     }
-    
+
     /**
      * Get a builder for a new SuffixTrie.
-     * 
+     *
      * @param <V>
-     * @return 
+     * @return
      */
-    public static <V> TrieBuilder<SuffixTrie<V>,V> suffix()
+    public static <V> TrieBuilder<SuffixTrie<V>, V> suffix()
     {
         return new TrieBuilder<>( new SuffixTrie<>() );
     }
-    
     private T trie; // the trie being built
-    
+
     private TrieBuilder( T trie )
     {
         this.trie = trie;
     }
-    
+
     /**
      * Get the built trie.
-     * 
+     * <p>
      * This method can only be called once, so the builder should
      * be considered exhausted after this method returns.
-     * 
-     * @return 
+     *
+     * @return
      */
     public T getTrie()
     {
@@ -58,19 +57,24 @@ public class TrieBuilder<T extends AbstractTrie<V>,V>
         trie = null; // after the trie's public API is accessible, its protected methods can no longer be
         return tmp;
     }
-    
+
+    /**
+     * Keys that contain one or more unsupported chars are not added to the trie.
+     *
+     * @return the number of keys which were rejected during the building process.
+     */
     public long getFailedToPut()
     {
         return failedToAdd;
     }
-    
+
     /**
      * Add a key-value pair to the trie, weighted by a score.
-     * 
+     *
      * @param key
      * @param value
      * @param score
-     * @return 
+     * @return
      */
     public boolean put( String key, V value, int score )
     {
@@ -78,20 +82,20 @@ public class TrieBuilder<T extends AbstractTrie<V>,V>
         {
             throw new IllegalStateException( "you cannot modify a trie after it's been used!" );
         }
-        if( !trie.put( key, value, score ))
+        if( !trie.put( key, value, score ) )
         {
             failedToAdd++;
             return false;
         }
         return true;
     }
-    
+
     /**
      * Add a key-value pair to the trie.
-     * 
+     *
      * @param key
      * @param value
-     * @return 
+     * @return
      */
     public boolean put( String key, V value )
     {
@@ -99,7 +103,7 @@ public class TrieBuilder<T extends AbstractTrie<V>,V>
         {
             throw new IllegalStateException( "you cannot modify a trie after it's been used!" );
         }
-        if( !trie.put( key, value ))
+        if( !trie.put( key, value ) )
         {
             failedToAdd++;
             return false;
