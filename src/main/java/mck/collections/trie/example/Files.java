@@ -16,7 +16,7 @@ public class Files
     protected static List<String> readLines( String file ) throws IOException
     {
         long start = System.nanoTime();
-        List<String> words = new LinkedList<>(); // for optimal remove() performance
+        List<String> words = new LinkedList<>(); // for optimal Iterator.remove() performance
         try( Scanner scanner = new Scanner( new File(  file )))
         {
             while( scanner.hasNextLine() )
