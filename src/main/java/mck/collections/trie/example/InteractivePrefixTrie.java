@@ -36,6 +36,7 @@ public class InteractivePrefixTrie
         {
             if( !builder.put( it.next(), i, size - i ))
             {
+                it.remove();
                 size--;
                 i--;
             }
