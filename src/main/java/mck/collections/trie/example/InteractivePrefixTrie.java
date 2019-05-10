@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
-import mck.collections.trie.PrefixTrie;
-import mck.collections.trie.TrieBuilder;
-import mck.collections.trie.TrieNode;
+import mck.collections.trie.ImmutableTrie;
+import mck.collections.trie.impl.ImmutableTrieBuilder;
+import mck.collections.trie.impl.TrieNode;
 
 /**
  *
@@ -27,14 +27,14 @@ public class InteractivePrefixTrie
         
         List<String> words = Files.readLines( file );
         
-        TrieBuilder<PrefixTrie<Integer>,Integer> builder = TrieBuilder.prefix();
+        ImmutableTrieBuilder<Integer> builder = ImmutableTrieBuilder.prefix();
         int i = 0;
         int size = words.size();
         Iterator<String> it = words.iterator();
         long start = System.nanoTime();
         while( it.hasNext() )
         {
-            if( !builder.put( it.next(), i, size - i ))
+            if( !builder.put( it.next(), size - i ))
             {
                 it.remove();
                 size--;
@@ -45,7 +45,7 @@ public class InteractivePrefixTrie
         long stop = System.nanoTime();
         System.out.println( "Constructed trie in " + ((stop - start )/1000000.0) + " milliseconds");
         
-        PrefixTrie<Integer> trie = builder.getTrie();
+        ImmutableTrie<Integer> trie = builder.getTrie();
         
         try( Scanner scanner = new Scanner( System.in ))
         {
@@ -60,7 +60,7 @@ public class InteractivePrefixTrie
                 }
                 System.out.println( "> Prefix: '" + line + "'" );
                 start = System.nanoTime();
-                List<TrieNode<Integer>> nodes = trie.getBestKeyValueNodes( line, n );
+                List<TrieNode<Integer>> nodes = trie.bestNodesWith( line, n );
                 StringBuilder result = new StringBuilder();
                 for( TrieNode<Integer> node : nodes )
                 {

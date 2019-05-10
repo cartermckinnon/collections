@@ -1,7 +1,5 @@
 
-package mck.collections.trie;
-
-import static mck.collections.trie.TrieNode.charToIndex;
+package mck.collections.trie.impl;
 
 /**
  *
@@ -9,12 +7,9 @@ import static mck.collections.trie.TrieNode.charToIndex;
  *
  * @param <V> a generic type
  */
-public class PrefixTrie<V> extends AbstractTrie<V>
+class ImmutablePrefixTrieImpl<V extends Comparable<V>> extends AbstractImmutableTrie<V>
 {
-    /**
-     * constructor for building a trie with TrieBuilder.
-     */
-    protected PrefixTrie()
+    protected ImmutablePrefixTrieImpl()
     {
         super();
     }
@@ -22,15 +17,15 @@ public class PrefixTrie<V> extends AbstractTrie<V>
     /**
      * {@inheritDoc}
      */
-    protected boolean put( String key, V value, int score )
+    @Override
+    public boolean put( String key, V value )
     {
         TrieNode<V> node = root;
         char[] chars = key.toCharArray();
         int[] indices = lookupIndices( chars );
         if( indices == null )
         {
-            // not allowed to add this word if one of the chars is unsupported
-            return false;
+            return false; // key contains unsupported characters
         }
         int level = 0;
         for( int i = 0; i < chars.length; i++ )
@@ -39,17 +34,17 @@ public class PrefixTrie<V> extends AbstractTrie<V>
             int index = indices[i];
             if( node.children[index] == null )
             {
-                TrieNode<V> temp = new TrieNode<V>( chars[i], level );
+                TrieNode<V> child = new TrieNode<>( characters, chars[i], level );
                 node.addChildIndex( index );
-                node.children[index] = temp;
-                temp.parent = node;
-                if( node.level + 1 != temp.level )
+                node.children[index] = child;
+                child.parent = node;
+                if( node.level + 1 != child.level )
                 {
                     throw new RuntimeException( "PrefixTrie: Bugs occurred: "
                                                 + "node.level + 1 should be equal to temp.level, while node.level = "
-                                                + node.level + ", temp.level = " + temp.level );
+                                                + node.level + ", temp.level = " + child.level );
                 }
-                node = temp;
+                node = child;
             }
             else
             {
@@ -67,7 +62,6 @@ public class PrefixTrie<V> extends AbstractTrie<V>
         }
         node.isKeyValueNode = true;
         node.value = value;
-        node.score = score;
         return true;
     }
 
@@ -77,27 +71,27 @@ public class PrefixTrie<V> extends AbstractTrie<V>
      * <p>
      * 2. Equivalent to getNodeWithLongestCommonPart(word.substring(0, maxPrefixLength))
      *
-     * @param word            : a word
-     * @param maxPrefixLength : as described above
+     * @param key            : a word
+     * @param fragmentLength : as described above
      * @return the node that has the longest common prefix with word
      */
     @Override
-    protected TrieNode<V> getNodeWithLongestCommonPart( String word, int maxPrefixLength )
+    protected TrieNode<V> getNodeWithLongestCommonPart( String key, int fragmentLength )
     {
-        if( maxPrefixLength < 0 )
+        if( fragmentLength < 0 )
         {
             throw new IllegalArgumentException(
-                    "IllegalArgumentException: the argument 'maxPrefixLength' (" + maxPrefixLength + ") should be non-negative." );
+                    "IllegalArgumentException: the argument 'maxPrefixLength' (" + fragmentLength + ") should be non-negative." );
         }
-        else if( maxPrefixLength > word.length() )
+        else if( fragmentLength > key.length() )
         {
             throw new IllegalArgumentException(
-                    "IllegalArgumentException: the argument 'maxPrefixLength' (" + maxPrefixLength + ") should not be larger than word.length()." );
+                    "IllegalArgumentException: the argument 'maxPrefixLength' (" + fragmentLength + ") should not be larger than word.length()." );
         }
         TrieNode<V> node = root;
-        for( int i = 0; i < maxPrefixLength; i++ )
+        for( int i = 0; i < fragmentLength; i++ )
         {
-            int index = charToIndex( word.charAt( i ) );
+            int index = characters.charToIndex(key.charAt( i ) );
             if( index >= 0 && node.children[index] != null )
             {
                 node = node.children[index];

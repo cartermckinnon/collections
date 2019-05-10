@@ -1,27 +1,23 @@
 
-package mck.collections.trie;
-
-import static mck.collections.trie.TrieNode.charToIndex;
+package mck.collections.trie.impl;
 
 /**
  * a data strcuture for suffix trie
  *
  * @param <V> a generic type
  */
-public class SuffixTrie<V> extends AbstractTrie<V>
+class ImmutableSuffixTrieImpl<V extends Comparable<V>> extends AbstractImmutableTrie<V>
 {
     /**
      * constructor to be used only by TrieBuilder.
      */
-    protected SuffixTrie()
+    protected ImmutableSuffixTrieImpl()
     {
         super();
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    protected boolean put( String word, V value, int score )
+    @Override
+    public boolean put( String word, V value )
     {
         TrieNode<V> node = root;
         char[] chars = word.toCharArray();
@@ -38,7 +34,7 @@ public class SuffixTrie<V> extends AbstractTrie<V>
             int index = indices[i];
             if( node.children[index] == null )
             {
-                TrieNode<V> temp = new TrieNode<V>( chars[i], level );
+                TrieNode<V> temp = new TrieNode<V>( characters, chars[i], level );
                 node.addChildIndex( index );
                 node.children[index] = temp;
                 temp.parent = node;
@@ -66,7 +62,6 @@ public class SuffixTrie<V> extends AbstractTrie<V>
         }
         node.isKeyValueNode = true;
         node.value = value;
-        node.score = score;
         return true;
     }
 
@@ -99,7 +94,7 @@ public class SuffixTrie<V> extends AbstractTrie<V>
         int start = word.length() - 1, end = word.length() - maxSuffixLength;
         for( int i = start; i >= end; i-- )
         {
-            int index = charToIndex( word.charAt( i ) );
+            int index = characters.charToIndex( word.charAt( i ) );
             if( index >= 0 && node.children[index] != null )
             {
                 node = node.children[index];
